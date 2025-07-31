@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Download, ExternalLink } from "lucide-react";
 import heroImage from "@/assets/hero-bg.jpg";
+import { useState, useEffect } from "react";
 
 const Hero = () => {
   const scrollToSection = (sectionId: string) => {
@@ -8,6 +9,35 @@ const Hero = () => {
       behavior: 'smooth'
     });
   };
+
+  const titles = ["Designer Gráfico", "Produtor Cultural", "Diretor de Arte", "Criativo Visual"];
+  const [currentTitle, setCurrentTitle] = useState("");
+  const [titleIndex, setTitleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+
+  useEffect(() => {
+    const currentFullTitle = titles[titleIndex];
+    const typingSpeed = isDeleting ? 50 : 100;
+    const pauseTime = isDeleting ? 1000 : 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting && charIndex < currentFullTitle.length) {
+        setCurrentTitle(currentFullTitle.slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      } else if (isDeleting && charIndex > 0) {
+        setCurrentTitle(currentFullTitle.slice(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      } else if (!isDeleting && charIndex === currentFullTitle.length) {
+        setTimeout(() => setIsDeleting(true), pauseTime);
+      } else if (isDeleting && charIndex === 0) {
+        setIsDeleting(false);
+        setTitleIndex((titleIndex + 1) % titles.length);
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, titleIndex, titles]);
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -33,13 +63,14 @@ const Hero = () => {
           {/* Main Title */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-bold font-mono">
-              <span className="text-primary animate-neon-glow">ALEX</span>
+              <span className="text-primary animate-neon-glow">MORENO</span>
               <br />
-              <span className="text-secondary">PIXEL</span>
+              <span className="text-secondary">MOTA</span>
             </h1>
-            <div className="text-xl md:text-2xl text-muted-foreground font-mono">
+            <div className="text-xl md:text-2xl text-muted-foreground font-mono h-8">
               <span className="text-accent">[</span>
-              <span>Designer Gráfico</span>
+              <span>{currentTitle}</span>
+              <span className="animate-pulse">|</span>
               <span className="text-accent">]</span>
             </div>
           </div>
@@ -65,10 +96,11 @@ const Hero = () => {
             <Button
               variant="outline"
               size="lg"
+              onClick={() => scrollToSection('contato')}
               className="min-w-48"
             >
               <Download className="mr-2" size={18} />
-              Download CV
+              Contato
             </Button>
           </div>
 

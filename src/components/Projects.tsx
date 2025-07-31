@@ -1,18 +1,23 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Eye } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 
 const Projects = () => {
+  const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  
   const projects = [
     {
       id: 1,
       title: "TechCorp Logo Design",
       category: "Branding",
-      description: "Identidade visual completa para startup de tecnologia com estética cyberpunk e elementos futuristas.",
-      image: project1,
+      description: "Identidade visual completa para startup de tecnologia com estética cyberpunk e elementos futuristas. Este projeto envolveu a criação de um sistema visual robusto incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais.",
+      images: [project1, project2, project3],
       tags: ["Logo", "Branding", "Tech"],
       color: "primary"
     },
@@ -20,8 +25,8 @@ const Projects = () => {
       id: 2,
       title: "GameUI Dashboard",
       category: "UI/UX Design",
-      description: "Interface de usuário para plataforma de jogos com design retrô inspirado nos anos 80.",
-      image: project2,
+      description: "Interface de usuário para plataforma de jogos com design retrô inspirado nos anos 80. Desenvolvido com foco na experiência do usuário gamer, combinando nostalgia com funcionalidade moderna.",
+      images: [project2, project1, project3],
       tags: ["UI/UX", "Gaming", "Interface"],
       color: "secondary"
     },
@@ -29,12 +34,17 @@ const Projects = () => {
       id: 3,
       title: "Digital Art Series",
       category: "Arte Digital",
-      description: "Série de posters digitais explorando a estética vaporwave e elementos de pixel art.",
-      image: project3,
+      description: "Série de posters digitais explorando a estética vaporwave e elementos de pixel art. Cada peça da série conta uma história única através de cores vibrantes e composições geométricas complexas.",
+      images: [project3, project2, project1],
       tags: ["Arte", "Digital", "Poster"],
       color: "accent"
     }
   ];
+
+  const truncateText = (text: string, maxLength: number = 80) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
 
   return (
     <section id="projetos" className="py-20">
@@ -61,21 +71,89 @@ const Projects = () => {
                 className="group bg-background/50 border-primary/20 hover:border-primary/50 transition-all duration-500 overflow-hidden animate-slide-up hover:shadow-neon"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                {/* Project Image */}
+                {/* Project Images Carousel */}
                 <div className="relative overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <div className="cursor-pointer">
+                        <img 
+                          src={project.images[0]} 
+                          alt={project.title}
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        
+                        {/* Image Count Badge */}
+                        {project.images.length > 1 && (
+                          <div className="absolute top-4 right-4">
+                            <span className="px-2 py-1 text-xs font-mono font-bold rounded-none bg-background/80 text-foreground">
+                              {project.images.length} fotos
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </DialogTrigger>
+                    
+                    <DialogContent className="max-w-4xl">
+                      <Carousel className="w-full">
+                        <CarouselContent>
+                          {project.images.map((image, imageIndex) => (
+                            <CarouselItem key={imageIndex}>
+                              <div className="p-1">
+                                <img 
+                                  src={image} 
+                                  alt={`${project.title} - Imagem ${imageIndex + 1}`}
+                                  className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+                                />
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        {project.images.length > 1 && (
+                          <>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                          </>
+                        )}
+                      </Carousel>
+                    </DialogContent>
+                  </Dialog>
                   
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-4 left-4 right-4 flex gap-2">
-                      <Button size="sm" variant="cyber" className="flex-1">
-                        <Eye className="w-4 h-4 mr-2" />
-                        Ver
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button size="sm" variant="cyber" className="flex-1">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver
+                          </Button>
+                        </DialogTrigger>
+                        
+                        <DialogContent className="max-w-4xl">
+                          <Carousel className="w-full">
+                            <CarouselContent>
+                              {project.images.map((image, imageIndex) => (
+                                <CarouselItem key={imageIndex}>
+                                  <div className="p-1">
+                                    <img 
+                                      src={image} 
+                                      alt={`${project.title} - Imagem ${imageIndex + 1}`}
+                                      className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+                                    />
+                                  </div>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                            {project.images.length > 1 && (
+                              <>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                              </>
+                            )}
+                          </Carousel>
+                        </DialogContent>
+                      </Dialog>
+                      
                       <Button size="sm" variant="outline">
                         <ExternalLink className="w-4 h-4" />
                       </Button>
@@ -96,9 +174,24 @@ const Projects = () => {
                     {project.title}
                   </h3>
                   
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {project.description}
-                  </p>
+                  <div className="text-muted-foreground text-sm leading-relaxed">
+                    <p>
+                      {expandedProject === project.id 
+                        ? project.description 
+                        : truncateText(project.description)
+                      }
+                    </p>
+                    {project.description.length > 80 && (
+                      <button
+                        onClick={() => setExpandedProject(
+                          expandedProject === project.id ? null : project.id
+                        )}
+                        className="text-primary hover:text-primary/80 transition-colors text-xs font-mono mt-2 underline"
+                      >
+                        {expandedProject === project.id ? "Ver menos" : "Ver mais"}
+                      </button>
+                    )}
+                  </div>
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2">
