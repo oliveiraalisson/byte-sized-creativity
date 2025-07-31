@@ -5,11 +5,13 @@ import Projects from "@/components/Projects";
 import Certificates from "@/components/Certificates";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import GameElements from "@/components/GameElements";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       <Header />
+      <GameElements />
       <main>
         <Hero />
         <About />

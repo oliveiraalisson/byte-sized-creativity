@@ -10,6 +10,8 @@ import project3 from "@/assets/project-3.jpg";
 
 const Projects = () => {
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  const [showAll, setShowAll] = useState(false);
   
   const projects = [
     {
@@ -38,8 +40,70 @@ const Projects = () => {
       images: [project3, project2, project1],
       tags: ["Arte", "Digital", "Poster"],
       color: "accent"
+    },
+    {
+      id: 4,
+      title: "Retro Gaming Magazine",
+      category: "Editorial",
+      description: "Design editorial para revista especializada em jogos retrô. Layout inspirado nos manuais clássicos dos videogames dos anos 80 e 90, com tipografia pixelizada e ilustrações nostálgicas.",
+      images: [project1, project3, project2],
+      tags: ["Editorial", "Gaming", "Magazine"],
+      color: "primary"
+    },
+    {
+      id: 5,
+      title: "Pixel Food App",
+      category: "UI/UX Design",
+      description: "Interface para aplicativo de delivery com tema 8-bit. Cada elemento foi desenhado pixel por pixel para criar uma experiência gastronômica única e divertida.",
+      images: [project2, project3, project1],
+      tags: ["UI/UX", "App", "Food"],
+      color: "secondary"
+    },
+    {
+      id: 6,
+      title: "Synthwave Album Cover",
+      category: "Arte Digital",
+      description: "Capas de álbum para artista de música eletrônica synthwave. Combinação de elementos neon, grids futuristas e carros esportivos dos anos 80 em composições dinâmicas.",
+      images: [project3, project1, project2],
+      tags: ["Arte", "Music", "Album"],
+      color: "accent"
+    },
+    {
+      id: 7,
+      title: "Indie Game Branding",
+      category: "Branding",
+      description: "Identidade visual completa para estúdio independente de jogos. Logo, personagens mascotes e guidelines para aplicação em diferentes mídias e plataformas digitais.",
+      images: [project1, project2, project3],
+      tags: ["Branding", "Gaming", "Indie"],
+      color: "primary"
+    },
+    {
+      id: 8,
+      title: "Virtual Reality Interface",
+      category: "UI/UX Design",
+      description: "Design de interface para experiência em realidade virtual. Elementos flutuantes, interações gestuais e visual futurista adaptado para o ambiente tridimensional.",
+      images: [project2, project1, project3],
+      tags: ["UI/UX", "VR", "Interface"],
+      color: "secondary"
+    },
+    {
+      id: 9,
+      title: "Cyberpunk Poster Series",
+      category: "Arte Digital",
+      description: "Série de posters promocionais para evento de tecnologia. Estética cyberpunk com elementos de realidade aumentada, hologramas e arquitetura futurista.",
+      images: [project3, project2, project1],
+      tags: ["Arte", "Poster", "Event"],
+      color: "accent"
     }
   ];
+
+  const categories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
+  
+  const filteredProjects = selectedCategory === "Todos" 
+    ? projects 
+    : projects.filter(p => p.category === selectedCategory);
+    
+  const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, 6);
 
   const truncateText = (text: string, maxLength: number = 80) => {
     if (text.length <= maxLength) return text;
@@ -63,9 +127,24 @@ const Projects = () => {
             </p>
           </div>
 
+          {/* Category Filters */}
+          <div className="flex flex-wrap justify-center gap-3 mb-12 animate-slide-up">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                variant={selectedCategory === category ? "cyber" : "outline"}
+                size="sm"
+                className="font-mono text-xs"
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
+            {displayedProjects.map((project, index) => (
               <Card 
                 key={project.id}
                 className="group bg-background/50 border-primary/20 hover:border-primary/50 transition-all duration-500 overflow-hidden animate-slide-up hover:shadow-neon"
@@ -208,6 +287,20 @@ const Projects = () => {
               </Card>
             ))}
           </div>
+
+          {/* Show More Button */}
+          {filteredProjects.length > 6 && (
+            <div className="text-center mt-12 animate-slide-up">
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => setShowAll(!showAll)}
+                className="font-mono"
+              >
+                {showAll ? "Ver Menos" : `Ver Mais (${filteredProjects.length - 6})`}
+              </Button>
+            </div>
+          )}
 
           {/* Call to Action */}
           <div className="text-center mt-16 animate-slide-up">
